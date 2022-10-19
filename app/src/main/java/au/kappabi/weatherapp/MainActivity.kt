@@ -28,5 +28,9 @@ class MainActivity : AppCompatActivity() {
             recyclerView?.adapter = adapter
         }
 
+        // TODO Add the loading spinner
+
+        // TODO Add refresh button in menu
+
     }
 }

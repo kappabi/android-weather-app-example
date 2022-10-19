@@ -61,4 +61,5 @@ class HomeViewModel(val weatherApi : WeatherApi) : ViewModel() {
         }
     }
 
+    // TODO Persist data
 }

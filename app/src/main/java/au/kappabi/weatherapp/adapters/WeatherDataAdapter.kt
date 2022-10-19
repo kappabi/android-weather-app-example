@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -13,23 +14,24 @@ import androidx.recyclerview.widget.RecyclerView
 import au.kappabi.weatherapp.R
 import au.kappabi.weatherapp.adapters.ThreeHourDataAdapter
 import au.kappabi.weatherapp.network.WeatherData
+import coil.load
 import java.text.SimpleDateFormat
 
 class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.WeatherViewHolder>(WeatherDataDiffCallback) {
 
     class WeatherViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
+        private val IMAGE_BASE_URL = "https://openweathermap.org/img/wn/"
+
         private val dateTextView : TextView = v.findViewById(R.id.date_text_view)
         private val timeTextView : TextView = v.findViewById(R.id.main_time_text_view)
         private val mainSummaryTextView : TextView = v.findViewById(R.id.main_summary_text_view)
         private val mainImageView : ImageView = v.findViewById(R.id.icon_main_image_view)
         private val threeHourRecyclerView : RecyclerView = v.findViewById(R.id.three_hour_recycler_view)
+        private val cardView : CardView = v.findViewById(R.id.cardView)
+
         private val context = v.context
         private val adapter = ThreeHourDataAdapter()
-
-        // TODO implement a scroll view for seeing the 3 hr weather data
-
-        private val cardView : CardView = v.findViewById(R.id.cardView)
 
         fun bind(weatherData: List<WeatherData>){
 
@@ -43,11 +45,14 @@ class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.Wea
             // Populate summary and time with first 3hr slot data
             mainSummaryTextView.text = weatherData[0].weather[0].summary
             var timeText = ""
-            val sdf_time = SimpleDateFormat("HH:mm a")
+            val sdf_time = SimpleDateFormat("h:mm a")
             timeText = sdf_time.format(date)
             timeTextView.text = timeText
 
-            // TODO retreive the icon images
+            // Retreive the icon image // TODO Learn how to cache and reuse icons
+            val imageName = weatherData[0].weather[0].icon
+            val imageUri = IMAGE_BASE_URL + imageName + "@2x.png"
+            mainImageView.load(imageUri)
 
             // Set up the three hour scrolling weather data views
             threeHourRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -56,7 +61,7 @@ class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.Wea
 
             // Navigate to details activity on card clicked
             cardView.setOnClickListener {
-                //TODO create details activity
+                //TODO Create details activity
             }
 
         }

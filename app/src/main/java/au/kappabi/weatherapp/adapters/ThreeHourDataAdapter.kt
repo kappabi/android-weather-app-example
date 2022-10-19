@@ -10,11 +10,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import au.kappabi.weatherapp.R
 import au.kappabi.weatherapp.network.WeatherData
+import coil.load
 import java.text.SimpleDateFormat
 
 class ThreeHourDataAdapter : ListAdapter<WeatherData, ThreeHourDataAdapter.ThreeHourDataViewHolder>(ThreeHourDataDiffCallback) {
 
     class ThreeHourDataViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+        private val IMAGE_BASE_URL = "https://openweathermap.org/img/wn/"
 
         private val timeTextView: TextView = v.findViewById(R.id.time_3hr_text_view)
         private val imageView : ImageView = v.findViewById(R.id.icon_3hr_image_view)
@@ -24,11 +27,14 @@ class ThreeHourDataAdapter : ListAdapter<WeatherData, ThreeHourDataAdapter.Three
             // Format time object
             val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(weatherData.dateTime)
             var timeText = ""
-            val sdf_time = SimpleDateFormat("HH:mm a")
+            val sdf_time = SimpleDateFormat("h:mm a")
             timeText = sdf_time.format(date)
             timeTextView.text = timeText
 
-            // TODO retreive the icon images
+            // Retreive the icon image // TODO Learn how to cache and reuse icons
+            val imageName = weatherData.weather[0].icon
+            val imageUri = IMAGE_BASE_URL + imageName + "@2x.png"
+            imageView.load(imageUri)
 
         }
 
