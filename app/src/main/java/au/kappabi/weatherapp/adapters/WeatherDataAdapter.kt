@@ -7,9 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import au.kappabi.weatherapp.R
+import au.kappabi.weatherapp.adapters.ThreeHourDataAdapter
 import au.kappabi.weatherapp.network.WeatherData
 import java.text.SimpleDateFormat
 
@@ -21,6 +23,9 @@ class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.Wea
         private val timeTextView : TextView = v.findViewById(R.id.main_time_text_view)
         private val mainSummaryTextView : TextView = v.findViewById(R.id.main_summary_text_view)
         private val mainImageView : ImageView = v.findViewById(R.id.icon_main_image_view)
+        private val threeHourRecyclerView : RecyclerView = v.findViewById(R.id.three_hour_recycler_view)
+        private val context = v.context
+        private val adapter = ThreeHourDataAdapter()
 
         // TODO implement a scroll view for seeing the 3 hr weather data
 
@@ -43,6 +48,11 @@ class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.Wea
             timeTextView.text = timeText
 
             // TODO retreive the icon images
+
+            // Set up the three hour scrolling weather data views
+            threeHourRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter.submitList(weatherData)
+            threeHourRecyclerView.adapter = adapter
 
             // Navigate to details activity on card clicked
             cardView.setOnClickListener {
