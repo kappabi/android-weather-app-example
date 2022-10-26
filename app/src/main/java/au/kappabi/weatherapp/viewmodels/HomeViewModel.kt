@@ -1,4 +1,4 @@
-package au.kappabi.simpleweatherapp.viewmodels
+package au.kappabi.weatherapp.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.*

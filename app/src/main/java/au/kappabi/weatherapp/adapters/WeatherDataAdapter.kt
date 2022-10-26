@@ -1,13 +1,11 @@
-package au.kappabi.simpleweatherapp.adapters
+package au.kappabi.weatherapp.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -15,12 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import au.kappabi.weatherapp.R
-import au.kappabi.weatherapp.adapters.ThreeHourDataAdapter
 import au.kappabi.weatherapp.network.WeatherData
 import coil.load
 import java.text.SimpleDateFormat
 
-class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.WeatherViewHolder>(WeatherDataDiffCallback) {
+class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.WeatherViewHolder>(
+    WeatherDataDiffCallback
+) {
 
     class WeatherViewHolder(v: View): RecyclerView.ViewHolder(v) {
 

@@ -2,20 +2,9 @@ package au.kappabi.weatherapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.widget.ProgressBar
-import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import au.kappabi.simpleweatherapp.adapters.WeatherDataAdapter
-import au.kappabi.simpleweatherapp.viewmodels.HomeViewModel
-import au.kappabi.weatherapp.network.WeatherApi
 
 class MainActivity : AppCompatActivity() {
 

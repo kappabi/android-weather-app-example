@@ -1,0 +1,111 @@
+package au.kappabi.simpleweatherapp
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import au.kappabi.weatherapp.viewmodels.HomeViewModel
+import au.kappabi.weatherapp.network.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
+import org.junit.*
+
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
+import org.mockito.kotlin.whenever
+import java.lang.RuntimeException
+
+/**
+ * Local unit tests of the home view model.
+ */
+@RunWith(MockitoJUnitRunner::class)
+@ExperimentalCoroutinesApi
+class HomeViewModelUnitTests {
+    // Test weather data
+    private val testWeatherResponse = WeatherResponse(200, listOf(
+        WeatherData("2017-01-30 18:00:00", WeatherMain(261.45f, 259.086f, 261.45f),
+            listOf(WeatherWeather("Clear", "02n")), WeatherWind(4.77f)),
+        WeatherData("2017-01-30 20:00:00", WeatherMain(261.45f, 259.086f, 261.45f),
+            listOf(WeatherWeather("Clear", "02n")), WeatherWind(4.77f))))
+    private val testWeatherResponse2Days = WeatherResponse(200, listOf(
+        WeatherData("2017-01-30 18:00:00", WeatherMain(261.45f, 259.086f, 261.45f),
+            listOf(WeatherWeather("Clear", "02n")), WeatherWind(4.77f)),
+        WeatherData("2017-01-31 20:00:00", WeatherMain(261.45f, 259.086f, 261.45f),
+            listOf(WeatherWeather("Clear", "02n")), WeatherWind(4.77f))))
+
+    // Mock web retrieval service
+    @Mock
+    private lateinit var mockWeatherApi: WeatherApi
+    @Mock
+    private lateinit var mockRetrofitService: WeatherApiService
+
+    // Needed to access the LiveData
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    // Set up the test dispatchers for testing of the coroutines
+    private val testDispatcher = UnconfinedTestDispatcher()
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun initialisation() {
+        runTest {
+            // Initialise ViewModel
+            whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
+            whenever(mockRetrofitService.getWeather()).doReturn(testWeatherResponse)
+            val testViewModel = HomeViewModel(mockWeatherApi)
+
+            assert(testViewModel.loaded.value == true)
+        }
+    }
+
+    @Test
+    fun exceptionResponse() {
+        runTest {
+            // Initialise ViewModel
+            whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
+            whenever(mockRetrofitService.getWeather()).doThrow(RuntimeException())
+            val testViewModel = HomeViewModel(mockWeatherApi)
+
+            // Check loaded and empty list set
+            assert(testViewModel.loaded.value == true)
+            assert(testViewModel.fullWeatherList.value!!.isEmpty())
+        }
+    }
+
+    @Test
+    fun groupWeather() {
+        runTest {
+            // Initialise ViewModel
+            whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
+            whenever(mockRetrofitService.getWeather()).doReturn(testWeatherResponse)
+            val testViewModel = HomeViewModel(mockWeatherApi)
+
+            // Check the two weather data has been grouped
+            assert(testViewModel.groupedList.value!!.size == 1)
+        }
+    }
+
+    @Test
+    fun groupWeather2Days() {
+        runTest {
+            // Initialise ViewModel
+            whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
+            whenever(mockRetrofitService.getWeather()).doReturn(testWeatherResponse2Days)
+            val testViewModel = HomeViewModel(mockWeatherApi)
+
+            // Check the two weather data has been grouped
+            assert(testViewModel.groupedList.value!!.size == 2)
+        }
+    }
+
+}

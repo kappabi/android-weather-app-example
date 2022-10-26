@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import au.kappabi.simpleweatherapp.adapters.WeatherDataAdapter
-import au.kappabi.simpleweatherapp.viewmodels.HomeViewModel
+import au.kappabi.weatherapp.adapters.WeatherDataAdapter
+import au.kappabi.weatherapp.viewmodels.HomeViewModel
 import au.kappabi.weatherapp.R
 import au.kappabi.weatherapp.network.WeatherApi
 
