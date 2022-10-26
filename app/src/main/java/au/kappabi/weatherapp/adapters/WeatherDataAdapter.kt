@@ -1,5 +1,6 @@
 package au.kappabi.simpleweatherapp.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -35,21 +38,25 @@ class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.Wea
 
         fun bind(weatherData: List<WeatherData>){
 
+            // Retrive values
+            val datetime = weatherData[0].dateTime
+            val summary = weatherData[0].weather[0].summary
+
             // Format date object
             var dayText = ""
-            val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(weatherData[0].dateTime)
+            val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(datetime)
             val sdf = SimpleDateFormat("dd MMM yyyy")
             dayText = sdf.format(date)
             dateTextView.text = dayText
 
             // Populate summary and time with first 3hr slot data
-            mainSummaryTextView.text = weatherData[0].weather[0].summary
+            mainSummaryTextView.text = summary
             var timeText = ""
             val sdf_time = SimpleDateFormat("h:mm a")
             timeText = sdf_time.format(date)
             timeTextView.text = timeText
 
-            // Retreive the icon image // TODO Learn how to cache and reuse icons
+            // Retreive the icon image 
             val imageName = weatherData[0].weather[0].icon
             val imageUri = IMAGE_BASE_URL + imageName + "@2x.png"
             mainImageView.load(imageUri)
@@ -59,9 +66,12 @@ class WeatherDataAdapter : ListAdapter<List<WeatherData>, WeatherDataAdapter.Wea
             adapter.submitList(weatherData)
             threeHourRecyclerView.adapter = adapter
 
-            // Navigate to details activity on card clicked
+            // Navigate to details fragment on card clicked
             cardView.setOnClickListener {
-                //TODO Create details activity
+                val bundle = bundleOf("datetime" to datetime, "summary" to summary, "wind" to weatherData[0].wind.windspeed,
+                "currentTemp" to weatherData[0].main.temp, "maxTemp" to weatherData[0].main.maxTemp, "minTemp" to weatherData[0].main.minTemp,
+                "iconUri" to imageUri)
+                it.findNavController().navigate(R.id.action_homeFragment_to_detailFragment, bundle)
             }
 
         }

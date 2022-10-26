@@ -1,10 +1,7 @@
 package au.kappabi.simpleweatherapp.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import au.kappabi.weatherapp.network.WeatherApi
 import au.kappabi.weatherapp.network.WeatherData
 import kotlinx.coroutines.launch

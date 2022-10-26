@@ -13,8 +13,8 @@ data class WeatherData (
 
     @Json(name = "dt_txt") val dateTime : String,
     val main : WeatherMain,
-    val weather : List<WeatherWeather>
-
+    val weather : List<WeatherWeather>,
+    val wind : WeatherWind
 )
 
 data class WeatherMain (
@@ -26,4 +26,8 @@ data class WeatherMain (
 data class WeatherWeather (
     @Json(name = "main") val summary : String?,
     @Json(name = "icon") val icon : String?
+)
+
+data class WeatherWind (
+    @Json(name = "speed") val windspeed : Float?
 )
