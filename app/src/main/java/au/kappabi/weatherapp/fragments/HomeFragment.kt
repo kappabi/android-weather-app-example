@@ -1,17 +1,19 @@
 package au.kappabi.weatherapp.fragments
 
-import android.app.Application
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.ProgressBar
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import au.kappabi.weatherapp.adapters.WeatherDataAdapter
-import au.kappabi.weatherapp.viewmodels.HomeViewModel
 import au.kappabi.weatherapp.R
+import au.kappabi.weatherapp.adapters.WeatherDataAdapter
+import au.kappabi.weatherapp.database.WeatherRepository
 import au.kappabi.weatherapp.network.WeatherApi
+import au.kappabi.weatherapp.viewmodels.HomeViewModel
+import au.kappabi.weatherapp.viewmodels.HomeViewModelFactory
+
 
 /**
  * Fragment to show weather forecast on home screen
@@ -19,7 +21,7 @@ import au.kappabi.weatherapp.network.WeatherApi
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     val weatherApi = WeatherApi
-    val homeViewModel by activityViewModels<HomeViewModel>() //HomeViewModel(weatherApi, Application())
+    val homeViewModel : HomeViewModel by viewModels { HomeViewModelFactory(weatherApi,WeatherRepository(requireActivity().application), requireActivity().application) }
     val adapter = WeatherDataAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,6 +1,9 @@
 package au.kappabi.simpleweatherapp
 
+import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import au.kappabi.weatherapp.database.WeatherRepository
 import au.kappabi.weatherapp.viewmodels.HomeViewModel
 import au.kappabi.weatherapp.network.*
 import kotlinx.coroutines.*
@@ -10,6 +13,7 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.whenever
@@ -38,6 +42,10 @@ class HomeViewModelUnitTests {
     private lateinit var mockWeatherApi: WeatherApi
     @Mock
     private lateinit var mockRetrofitService: WeatherApiService
+    @Mock
+    private lateinit var mockContext: Application
+    @Mock
+    private lateinit var mockRepository: WeatherRepository
 
     // Needed to access the LiveData
     @get:Rule
@@ -62,7 +70,9 @@ class HomeViewModelUnitTests {
             // Initialise ViewModel
             whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
             whenever(mockRetrofitService.getWeather()).doReturn(testWeatherResponse)
-            val testViewModel = HomeViewModel(mockWeatherApi)
+            whenever(mockRepository.findByID(any())).doReturn(MutableLiveData())
+
+            val testViewModel = HomeViewModel(mockWeatherApi, mockRepository, mockContext)
 
             assert(testViewModel.loaded.value == true)
         }
@@ -74,7 +84,9 @@ class HomeViewModelUnitTests {
             // Initialise ViewModel
             whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
             whenever(mockRetrofitService.getWeather()).doThrow(RuntimeException())
-            val testViewModel = HomeViewModel(mockWeatherApi)
+            whenever(mockRepository.findByID(any())).doReturn(MutableLiveData())
+
+            val testViewModel = HomeViewModel(mockWeatherApi, mockRepository, mockContext)
 
             // Check loaded and empty list set
             assert(testViewModel.loaded.value == true)
@@ -88,7 +100,9 @@ class HomeViewModelUnitTests {
             // Initialise ViewModel
             whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
             whenever(mockRetrofitService.getWeather()).doReturn(testWeatherResponse)
-            val testViewModel = HomeViewModel(mockWeatherApi)
+            whenever(mockRepository.findByID(any())).doReturn(MutableLiveData())
+
+            val testViewModel = HomeViewModel(mockWeatherApi, mockRepository, mockContext)
 
             // Check the two weather data has been grouped
             assert(testViewModel.groupedList.value!!.size == 1)
@@ -101,7 +115,9 @@ class HomeViewModelUnitTests {
             // Initialise ViewModel
             whenever(mockWeatherApi.retrofitService) doReturn (mockRetrofitService)
             whenever(mockRetrofitService.getWeather()).doReturn(testWeatherResponse2Days)
-            val testViewModel = HomeViewModel(mockWeatherApi)
+            whenever(mockRepository.findByID(any())).doReturn(MutableLiveData())
+
+            val testViewModel = HomeViewModel(mockWeatherApi, mockRepository, mockContext)
 
             // Check the two weather data has been grouped
             assert(testViewModel.groupedList.value!!.size == 2)

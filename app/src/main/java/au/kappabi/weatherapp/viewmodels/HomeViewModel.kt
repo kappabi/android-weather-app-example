@@ -8,15 +8,14 @@ import au.kappabi.weatherapp.database.WeatherRepository
 import au.kappabi.weatherapp.network.WeatherApi
 import au.kappabi.weatherapp.network.WeatherData
 import au.kappabi.weatherapp.network.WeatherResponse
-import au.kappabi.weatherapp.network.WeatherWeather
 import kotlinx.coroutines.launch
 import kotlin.concurrent.thread
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+
+class HomeViewModel(val weatherApi: WeatherApi, val repo: WeatherRepository, application: Application) : AndroidViewModel(application) {
 
     // Persistent database repository
     private var _weatherId = 1
-    private val repo = WeatherRepository(application)
 
     // Weather data as retrieved from the server, initialised with database data
     private val _response = MutableLiveData<List<WeatherData>>(repo.findByID(_weatherId).value?.weatherList)
@@ -29,9 +28,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     // Weather data grouped by date
     private var _groupedList = MutableLiveData<Map<String, List<WeatherData>>>()
     var groupedList : LiveData<Map<String, List<WeatherData>>> = _groupedList
-
-    // Network API
-    val weatherApi = WeatherApi
 
     /**
      * Initialisation of weather data
